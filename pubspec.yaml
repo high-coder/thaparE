@@ -36,7 +36,7 @@ dependencies:
   data_connection_checker: ^0.3.4
   cloud_firestore: ^0.14.1+2
   flutter_svg: ^0.18.1 # it help us to use svg in our project
-  provider: ^4.3.2+2
+  provider: 5.0.0
   shimmer: any
   scoped_model: ^1.0.1
   flare_flutter: any

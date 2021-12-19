@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<OrderScreenProvider>(
               create: (context) => OrderScreenProvider()),
           StreamProvider<ConnectionResult>.value(
-              value: CheckConnectionStatus().connectionChecker.stream),
+              value: CheckConnectionStatus().connectionChecker.stream, initialData: ConnectionResult.Offline,),
         ],
         child: MaterialApp(
             home: MainScreen(),
