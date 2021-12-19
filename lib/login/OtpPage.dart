@@ -153,6 +153,8 @@ class _OtpPageState extends State<OtpPage> {
                                       : Navigator.popAndPushNamed(
                                           context, '/adduser');
                                 }).catchError((e) {
+
+                                  print("we found error");
                                   print(e);
                                 });
                               }

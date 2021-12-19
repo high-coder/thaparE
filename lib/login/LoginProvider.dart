@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:appetizer/Contants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,7 +17,6 @@ class LoginProvider extends ChangeNotifier {
   String PhoneNo;
   String name;
   bool verified = false;
-
 
   phoneLength(value) {
     if (value.length != 10) {
@@ -37,9 +37,9 @@ class LoginProvider extends ChangeNotifier {
   }
 
   void verifyPhoneNumber(String PhoneNumber) async {
-   await _auth.signOut();
+    await _auth.signOut();
     PhoneNo = PhoneNumber;
-print(PhoneNo);
+    print(PhoneNo);
     PhoneVerificationCompleted verificationCompleted =
         (PhoneAuthCredential phoneAuthCredential) async {
       await _auth.signInWithCredential(phoneAuthCredential);
@@ -77,21 +77,21 @@ print(PhoneNo);
 
   Future<bool> signInWithPhoneNumber(String smsCode) async {
     print(smsCode);
-      final AuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationID, smsCode: smsCode);
-      user = (await _auth.signInWithCredential(credential)).user;
+    final AuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationID, smsCode: smsCode);
+    user = (await _auth.signInWithCredential(credential)).user;
     try {
-      await _firestore
-          .doc("user/${_auth.currentUser.uid}")
-          .get()
-          .then((value) {
+      await _firestore.doc("user/${_auth.currentUser.uid}").get().then((value) {
         name = value.get('firstname');
+        preferences.preference.setString('uid', user.uid);
+        preferences.preference.setString('name', name);
         if (value.exists) {
           _firestore
               .collection('user')
               .doc(_auth.currentUser.uid)
               .update({"lastLogin": DateTime.now()});
           notifyListeners();
+          preferences.preference.setBool('login', true);
           return verified = true;
         } else {
           notifyListeners();
@@ -101,8 +101,8 @@ print(PhoneNo);
     } catch (e) {
       debugPrint('error in firebase $e');
     }
-      print('phone verified ');
-      notifyListeners();
+    print('phone verified ');
+    notifyListeners();
   }
 
   validateUser() {
@@ -126,6 +126,10 @@ print(PhoneNo);
         'lastTransactions': [],
         'totalTransactionsAmount': 0
       });
+      preferences.preference.setBool('login', true);
+      preferences.preference.setString('uid', user.uid);
+      preferences.preference.setString('name', firstname);
+
       name = firstname;
       notifyListeners();
     } catch (e) {}
@@ -133,6 +137,7 @@ print(PhoneNo);
 
   void signOut() {
     _auth.signOut();
+    preferences.preference.setBool('login', false);
     user = null;
     verified = false;
     notifyListeners();

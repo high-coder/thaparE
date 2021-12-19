@@ -1,3 +1,4 @@
+import 'package:appetizer/Contants.dart';
 import 'package:appetizer/ProductPage/models/FeatureProvider.dart';
 import 'package:appetizer/ProductPage/models/MainScreenProviders.dart';
 import 'package:appetizer/ProductPage/models/OrderScreenProvider.dart';
@@ -21,6 +22,7 @@ import 'login/LoginProvider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await preferences.getInit();
   runApp(MyApp());
 }
 
@@ -31,6 +33,8 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    bool login = preferences.preference.getBool('login');
+
     return MultiProvider(
         providers: [
           ChangeNotifierProvider<MainScreenProvider>(
@@ -50,10 +54,12 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<OrderScreenProvider>(
               create: (context) => OrderScreenProvider()),
           StreamProvider<ConnectionResult>.value(
-              value: CheckConnectionStatus().connectionChecker.stream, initialData: ConnectionResult.Offline,),
+            value: CheckConnectionStatus().connectionChecker.stream,
+            initialData: ConnectionResult.Offline,
+          ),
         ],
         child: MaterialApp(
-            home: MainScreen(),
+            home: login != null && login ? MainScreen() : LoginPage(),
             routes: {
               '/home': (context) => MainScreen(),
               '/mainScreen': (context) => MainFrontScreen(),

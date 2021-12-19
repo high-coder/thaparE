@@ -1,6 +1,4 @@
 import 'package:appetizer/ProductPage/models/DrawerScreenProvider.dart';
-import 'package:appetizer/Screens/AboutUS.dart';
-import 'package:appetizer/Screens/SurveyScreen.dart';
 import 'package:appetizer/Screens/cartScreen.dart';
 import 'package:appetizer/login/LoginPage.dart';
 import 'package:appetizer/login/LoginProvider.dart';
@@ -81,8 +79,7 @@ class MenuDrawer extends StatelessWidget {
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20)
-                        );
+                            fontSize: 20));
                   }),
                 ],
               )
@@ -194,6 +191,7 @@ class MenuDrawer extends StatelessWidget {
                 ),
                 onTap: () {
                   loginProvider.signOut();
+                  Navigator.of(context).popAndPushNamed('/login');
                 },
                 title: Text(
                   'Logout',
