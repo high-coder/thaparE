@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LoginProvider extends ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   User user;
   bool NumberLength = true;
@@ -37,12 +37,12 @@ class LoginProvider extends ChangeNotifier {
   }
 
   void verifyPhoneNumber(String PhoneNumber) async {
-    await _auth.signOut();
+    await auth.signOut();
     PhoneNo = PhoneNumber;
     print(PhoneNo);
     PhoneVerificationCompleted verificationCompleted =
         (PhoneAuthCredential phoneAuthCredential) async {
-      await _auth.signInWithCredential(phoneAuthCredential);
+      await auth.signInWithCredential(phoneAuthCredential);
       print('PhoneAutomatically verifies');
     };
 
@@ -63,7 +63,7 @@ class LoginProvider extends ChangeNotifier {
     };
 
     try {
-      await _auth.verifyPhoneNumber(
+      await auth.verifyPhoneNumber(
           phoneNumber: '+91' + PhoneNumber,
           verificationCompleted: verificationCompleted,
           verificationFailed: verificationFailed,
@@ -79,16 +79,16 @@ class LoginProvider extends ChangeNotifier {
     print(smsCode);
     final AuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationID, smsCode: smsCode);
-    user = (await _auth.signInWithCredential(credential)).user;
+    user = (await auth.signInWithCredential(credential)).user;
     try {
-      await _firestore.doc("user/${_auth.currentUser.uid}").get().then((value) {
+      await _firestore.doc("user/${auth.currentUser.uid}").get().then((value) {
         name = value.get('firstname');
         preferences.preference.setString('uid', user.uid);
         preferences.preference.setString('name', name);
         if (value.exists) {
           _firestore
               .collection('user')
-              .doc(_auth.currentUser.uid)
+              .doc(auth.currentUser.uid)
               .update({"lastLogin": DateTime.now()});
           notifyListeners();
           preferences.preference.setBool('login', true);
@@ -124,7 +124,8 @@ class LoginProvider extends ChangeNotifier {
         'lastLogin': DateTime.now(),
         'wishlist': [],
         'lastTransactions': [],
-        'totalTransactionsAmount': 0
+        'totalTransactionsAmount': 0,
+        'currentOrder':[]
       });
       preferences.preference.setBool('login', true);
       preferences.preference.setString('uid', user.uid);
@@ -136,7 +137,7 @@ class LoginProvider extends ChangeNotifier {
   }
 
   void signOut() {
-    _auth.signOut();
+    auth.signOut();
     preferences.preference.setBool('login', false);
     user = null;
     verified = false;

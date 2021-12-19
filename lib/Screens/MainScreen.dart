@@ -1,4 +1,5 @@
 import 'package:appetizer/ProductPage/models/connectionChecker.dart';
+import 'package:appetizer/login/LoginProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,15 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   bool ConnectionCheck = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    LoginProvider provider = Provider.of(context, listen: false);
+    provider.user = provider.auth.currentUser;
+    print(provider.user);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +43,13 @@ class _MainScreenState extends State<MainScreen> {
                   case ConnectionResult.Offline:
                     ConnectionCheck = true;
                     break;
-                  default:  
+                  default:
                     ConnectionCheck = false;
                 }
                 return Visibility(
                   visible: ConnectionCheck,
-                  child: Container(width: size.width,
+                  child: Container(
+                      width: size.width,
                       color: Colors.white,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

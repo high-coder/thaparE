@@ -5,12 +5,14 @@ import 'package:appetizer/login/LoginProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../Contants.dart';
 import 'OrderScreen.dart';
 
 class MenuDrawer extends StatelessWidget {
   loginNavigator(BuildContext context) async {
     LoginProvider loginProvider =
         Provider.of<LoginProvider>(context, listen: false);
+
     if (loginProvider.user != null) {
       await Navigator.of(context)
           .push(MaterialPageRoute(builder: (BuildContext context) {
@@ -74,8 +76,7 @@ class MenuDrawer extends StatelessWidget {
                   ),
                   Consumer<LoginProvider>(builder: (BuildContext context,
                       LoginProvider value, Widget child) {
-                    return Text(
-                        value.user != null ? value.name : 'Please Login',
+                    return Text(preferences.preference.getString('name'),
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
